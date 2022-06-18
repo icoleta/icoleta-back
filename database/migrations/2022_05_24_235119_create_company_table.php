@@ -18,7 +18,8 @@ class CreateCompanyTable extends Migration
             $table->string('email')->unique()->nullable();
             $table->string('name');
             $table->string('cnpj');
-            $table->foreignId('user_id')->constrained('users');
+            $table->boolean('verified')->default(false);
+            $table->string('password');
             $table->timestamps();
         });
     }
