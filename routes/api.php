@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CompanyController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,3 +24,5 @@ Route::post('/send-reset-email',[UserController::class, 'sendEmailToResetPass'])
 Route::post('/reset-pass',[UserController::class, 'resetPass']);
 Route::post('/login',[UserController::class, 'login']);
 Route::post('/registerUser',[UserController::class, 'registerUser']);
+
+Route::post('/company/register', [CompanyController::class, 'registerCompany'], 'registerCompany');
