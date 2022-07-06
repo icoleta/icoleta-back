@@ -116,20 +116,20 @@ class UserController extends Controller
 
     public function registerUser(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'password' => 'required',
-            'cpf' => 'required',
-            'email' => 'required',
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     'name' => 'required',
+        //     'password' => 'required',
+        //     'cpf' => 'required',
+        //     'email' => 'required',
+        // ]);
 
-        if ($validator->fails())
-        {
-            $messages = $validator->messages();
-            return response()->json([
-                'error' => $messages,
-            ], 500);
-        }
+        // if ($validator->fails())
+        // {
+        //     $messages = $validator->messages();
+        //     return response()->json([
+        //         'error' => $messages,
+        //     ], 500);
+        // }
 
         $user = new User();
         $user->name = $request->name;
