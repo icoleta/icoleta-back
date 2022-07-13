@@ -18,7 +18,7 @@ class CreatePointsTable extends Migration
             $table->string('name');
             $table->double('longitude')->nullable();
             $table->double('latitude')->nullable();
-            $table->foreignId('company_id')->constrained('companies');
+            $table->foreignId('company_id')->constrained('company');
             $table->timestamps();
         });
     }

@@ -17,7 +17,7 @@ class CreateFilesTable extends Migration
             $table->id();
             $table->string('path');
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('company_id')->constrained('companies');
+            $table->foreignId('company_id')->constrained('company');
             $table->foreignId('file_type_id')->constrained('file_types');
             $table->timestamps();
         });
