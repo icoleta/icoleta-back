@@ -27,6 +27,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // Route::post('/registerUser',[UserController::class, 'registerUser']);
 
 Route::post('/company/register', [CompanyController::class, 'registerCompany']);
+Route::get('/company/point', [CompanyController::class, 'listPoints']);
 Route::post('/company/point', [CompanyController::class, 'createPoint']);
 
 Route::post('login', [LoginController::class, 'login']);

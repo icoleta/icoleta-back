@@ -63,6 +63,15 @@ class CompanyController extends Controller
         });
     }
 
+    public function listPoints(Request $request) {
+        $user = User::where('email', $request->CompanyEmail)->first();
+        $points = Point::where('company_id', $user->company->id)->get();
+
+        return response()->json([
+            'data' => $points,
+        ]);
+    }
+
     public function createPoint(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -81,7 +90,7 @@ class CompanyController extends Controller
         }
 
         $user = User::where('email', $request->companyEmail)->first();
-        $company = Company::where('userId', $user->id)->first();
+        $company = $user->company;
 
         $point = new Point();
         $point->name = $request->name;
