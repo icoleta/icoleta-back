@@ -16,6 +16,8 @@ class CreatePointsTable extends Migration
         Schema::create('points', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('hours');
+            $table->string('items');
             $table->double('longitude')->nullable();
             $table->double('latitude')->nullable();
             $table->foreignId('company_id')->constrained('company');

@@ -27,8 +27,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // Route::post('/registerUser',[UserController::class, 'registerUser']);
 
 Route::post('/company/register', [CompanyController::class, 'registerCompany']);
+Route::post('/company/point', [CompanyController::class, 'createPoint']);
 
-// Route::prefix('auth')->group(function (){
-    Route::post('login', [LoginController::class, 'login']);
-    Route::post('logout', [LoginController::class, 'logout']);
-// });
+Route::post('login', [LoginController::class, 'login']);
+Route::post('logout', [LoginController::class, 'logout']);

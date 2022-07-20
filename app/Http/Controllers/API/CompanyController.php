@@ -7,6 +7,7 @@ use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Point;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -60,5 +61,43 @@ class CompanyController extends Controller
                 ], 500);
             }            
         });
+    }
+
+    public function createPoint(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'hours' => 'required',
+            'items' => 'required',
+            'companyEmail' => 'required',
+            // 'license' => 'required',
+        ]);
+
+        if ($validator->fails())
+        {
+            $messages = $validator->messages();
+            return response()->json([
+                'error' => $messages,
+            ], 500);
+        }
+
+        $user = User::where('email', $request->companyEmail)->first();
+        $company = Company::where('userId', $user->id)->first();
+
+        $point = new Point();
+        $point->name = $request->name;
+        $point->hours = $request->hours;
+        $point->items = $request->items;
+        $point->company_id = $company->id;
+
+        if($point->save()) {
+            return response()->json([
+                'status' => 'Ponto criado com sucesso.',
+                'data' => $point,
+            ]);
+        } else {
+            return response()->json([
+                'error' => "Houve um erro inesperado"
+            ], 500);
+        }
     }
 }
