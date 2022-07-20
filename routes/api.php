@@ -29,9 +29,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/company/register', [CompanyController::class, 'registerCompany']);
 
 Route::get('/company/point', [CompanyController::class, 'listPoints']);
+Route::post('/company/point', [CompanyController::class, 'createPoint']);
 Route::get('/company/point/{id}', [CompanyController::class, 'showPoint']);
 Route::put('/company/point/{id}', [CompanyController::class, 'editPoint']);
-Route::post('/company/point', [CompanyController::class, 'createPoint']);
+Route::delete('/company/point/{id}', [CompanyController::class, 'deletePoint']);
 
 Route::post('login', [LoginController::class, 'login']);
 Route::post('logout', [LoginController::class, 'logout']);

@@ -148,4 +148,11 @@ class CompanyController extends Controller
             ], 500);
         }
     }
+
+    public function deletePoint($id) {
+        Point::find($id)->delete();
+        return response()->json([
+            'status' => 'Ponto removido com sucesso.',
+        ]);
+    }
 }
