@@ -109,4 +109,43 @@ class CompanyController extends Controller
             ], 500);
         }
     }
+
+    public function showPoint($id) {
+        $point = Point::find($id);
+        return response()->json([
+            'data' => $point,
+        ]);
+    }
+
+    public function editPoint(Request $request, $id) {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'hours' => 'required',
+            'items' => 'required',
+        ]);
+
+        if ($validator->fails())
+        {
+            $messages = $validator->messages();
+            return response()->json([
+                'error' => $messages,
+            ], 500);
+        }
+
+        $point = Point::find($id);
+        $point->name = $request->name;
+        $point->hours = $request->hours;
+        $point->items = $request->items;
+
+        if($point->save()) {
+            return response()->json([
+                'status' => 'Ponto editado com sucesso.',
+                'data' => $point,
+            ]);
+        } else {
+            return response()->json([
+                'error' => "Houve um erro inesperado"
+            ], 500);
+        }
+    }
 }
