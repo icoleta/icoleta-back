@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\API\CompanyController;
-use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\Auth\API\LoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\PointController;
+use App\Http\Controllers\API\CompanyController;
+use App\Http\Controllers\Auth\API\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +27,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // Route::post('/registerUser',[UserController::class, 'registerUser']);
 
 Route::post('/company/register', [CompanyController::class, 'registerCompany']);
+
+Route::get('point', [PointController::class, 'listAll']);
 
 Route::get('/company/point', [CompanyController::class, 'listPoints']);
 Route::post('/company/point', [CompanyController::class, 'createPoint']);
