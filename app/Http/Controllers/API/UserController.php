@@ -30,7 +30,7 @@ class UserController extends Controller
         if($user){
             $user->remember_token = Hash::make($request->email);
             try {
-                Mail::to('victor.smtp.dev@gmail.com')->send(new ResetPassword($user->remember_token));
+                Mail::to(request('email'))->send(new ResetPassword($user->remember_token));
 
                 $user->save();
 
@@ -135,7 +135,7 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->cpf = $request->cpf;
-        $user->roles_id = 1;
+        // $user->roles_id = 1;
         $user->password = Hash::make($request->password);
 
         if($user->save()){
