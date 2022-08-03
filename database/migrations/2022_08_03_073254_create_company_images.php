@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStatesTable extends Migration
+class CreateCompanyImages extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateStatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('states', function (Blueprint $table) {
+        Schema::create('company_images', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('uf');
+            $table->foreignId('company_id')->constrained('company');
+            $table->foreignId('file_id')->constrained('files');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateStatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('states');
+        Schema::dropIfExists('company_images');
     }
 }

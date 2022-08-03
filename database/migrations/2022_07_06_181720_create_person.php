@@ -17,7 +17,7 @@ class CreatePerson extends Migration
             $table->id();
             $table->string('name');
             $table->string('cpf', 11);
-            $table->foreignId('userId')->constrained('users');
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
     }
