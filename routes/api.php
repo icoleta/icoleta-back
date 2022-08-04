@@ -26,14 +26,19 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // Route::post('/login',[UserController::class, 'login']);
 // Route::post('/registerUser',[UserController::class, 'registerUser']);
 
-Route::post('/company/register', [CompanyController::class, 'registerCompany']);
 
-Route::get('point', [PointController::class, 'listAll']);
-Route::get('/company/point', [PointController::class, 'listPoints']);
-Route::post('/company/point', [PointController::class, 'createPoint']);
-Route::get('/company/point/{id}', [PointController::class, 'showPoint']);
-Route::put('/company/point/{id}', [PointController::class, 'editPoint']);
-Route::delete('/company/point/{id}', [PointController::class, 'deletePoint']);
+Route::get('point', [PointController::class, 'index']);
+
+Route::prefix('/company')->group(function(){
+    Route::post('/register', [CompanyController::class, 'registerCompany']);
+    Route::prefix('/point')->group(function(){
+        Route::get('/', [PointController::class, 'showUserPoints']);
+        Route::post('/', [PointController::class, 'createPoint']);
+        Route::get('/{id}', [PointController::class, 'show']);
+        Route::put('/{id}', [PointController::class, 'update']);
+        Route::delete('/{id}', [PointController::class, 'destroy']);
+    });
+});
 
 Route::post('login', [LoginController::class, 'login']);
 Route::post('logout', [LoginController::class, 'logout']);
