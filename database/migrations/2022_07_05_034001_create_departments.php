@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePointsTable extends Migration
+class CreateDepartments extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,10 @@ class CreatePointsTable extends Migration
      */
     public function up()
     {
-        Schema::create('points', function (Blueprint $table) {
+        Schema::create('departments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('hours');
-            $table->string('phone');
-            $table->double('longitude')->nullable();
-            $table->double('latitude')->nullable();
-            $table->boolean('active')->default(true);
-            $table->foreignId('company_id')->constrained('company');
+            $table->string('acronym');
             $table->timestamps();
         });
     }
@@ -33,6 +28,6 @@ class CreatePointsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('points');
+        Schema::dropIfExists('departments');
     }
 }

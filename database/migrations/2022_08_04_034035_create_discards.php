@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePerson extends Migration
+class CreateDiscards extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreatePerson extends Migration
      */
     public function up()
     {
-        Schema::create('person', function (Blueprint $table) {
+        Schema::create('discards', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('cpf', 11);
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('course_id')->constrained('courses');
-            $table->foreignId('semester_id')->constrained('semesters');
+            $table->foreignId('person_id')->constrained('person');
+            $table->foreignId('point_id')->constrained('points');
+            $table->foreignId('residuum_id')->constrained('residuum');
+            $table->decimal('weight', 6, 2, true);
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreatePerson extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('person');
+        Schema::dropIfExists('discards');
     }
 }
