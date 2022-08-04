@@ -33,7 +33,7 @@ Route::prefix('/company')->group(function(){
     Route::post('/register', [CompanyController::class, 'registerCompany']);
     Route::prefix('/point')->group(function(){
         Route::get('/', [PointController::class, 'showUserPoints']);
-        Route::post('/', [PointController::class, 'createPoint']);
+        Route::post('/', [PointController::class, 'store']);
         Route::get('/{id}', [PointController::class, 'show']);
         Route::put('/{id}', [PointController::class, 'update']);
         Route::delete('/{id}', [PointController::class, 'destroy']);
