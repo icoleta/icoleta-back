@@ -57,4 +57,9 @@ class PersonController extends Controller
             }
         });
     }
+
+    public function index() {
+        $people = Person::all();
+        return response()->json($people);
+    }
 }
