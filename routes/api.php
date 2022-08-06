@@ -50,5 +50,11 @@ Route::prefix('/company')->group(function() {
     });
 });
 
+Route::prefix('/admin')->group(function() {
+    Route::prefix('/company')->group(function() {
+        Route::get('/', [CompanyController::class, 'index']);
+    });
+});
+
 Route::post('login', [LoginController::class, 'login']);
 Route::post('logout', [LoginController::class, 'logout']);
