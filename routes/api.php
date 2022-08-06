@@ -54,6 +54,7 @@ Route::prefix('/admin')->group(function() {
     Route::prefix('/company')->group(function() {
         Route::get('/', [CompanyController::class, 'index']);
         Route::get('/{id}', [CompanyController::class, 'show']);
+        Route::patch('/{id}', [CompanyController::class, 'verify']);
     });
 });
 

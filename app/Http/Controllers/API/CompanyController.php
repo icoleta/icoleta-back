@@ -72,4 +72,18 @@ class CompanyController extends Controller
 
         return response()->json($company);
     }
+
+    public function verify($companyId) {
+        $company = Company::find($companyId);
+        if(!$company) {
+            return response()->json([
+                'error' => "Entidade não encontrada."
+            ], 404);
+        }
+
+        $company->verified = $company->verified ? false : true;
+        $company->save();
+
+        return response(null, 204);
+    }
 }
