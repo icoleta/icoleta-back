@@ -61,4 +61,15 @@ class CompanyController extends Controller
         $companies = Company::all();
         return response()->json($companies);
     }
+
+    public function show($id) {
+        $company = Company::find($id);
+        if(!$company) {
+            return response()->json([
+                'error' => "Entidade não encontrada."
+            ], 404);
+        }
+
+        return response()->json($company);
+    }
 }
