@@ -6,6 +6,7 @@ use App\Http\Controllers\API\PointController;
 use App\Http\Controllers\API\CompanyController;
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\PersonController;
+use App\Http\Controllers\API\ResiduumController;
 use App\Http\Controllers\API\SemesterController;
 use App\Http\Controllers\Auth\API\LoginController;
 
@@ -59,6 +60,13 @@ Route::prefix('/admin')->group(function() {
         Route::get('/', [CompanyController::class, 'index']);
         Route::get('/{id}', [CompanyController::class, 'show']);
         Route::patch('/{id}', [CompanyController::class, 'verify']);
+    });
+
+    Route::prefix('/residuum')->group(function() {
+        Route::get('/', [ResiduumController::class, 'index']);
+        Route::post('/', [ResiduumController::class, 'store']);
+        Route::put('/{id}', [ResiduumController::class, 'edit']);
+        Route::delete('/{id}', [ResiduumController::class, 'delete']);
     });
 });
 
