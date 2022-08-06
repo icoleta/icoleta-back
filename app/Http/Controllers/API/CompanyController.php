@@ -12,13 +12,11 @@ use Illuminate\Support\Facades\Validator;
 
 class CompanyController extends Controller
 {
-    public function registerCompany(Request $request) {    
+    public function store(Request $request) {    
         $validator = Validator::make($request->all(), [
-            'trading_name' => 'required',
-            'company_name' => 'required',
+            'name' => 'required',
             'cnpj' => 'required',
             'phone' => 'required',
-            // 'license' => 'required',
             'email' => 'required',
             'password' => 'required'
         ]);
@@ -34,7 +32,6 @@ class CompanyController extends Controller
         DB::transaction(function () use (
             $request,
         ) {
-
             $user = new User();
             $user->email = $request->email;
             $user->isCompany = true;
@@ -42,23 +39,21 @@ class CompanyController extends Controller
             $user->save();
 
             $company = new Company();
-            $company->trading_name = $request->trading_name;
-            $company->company_name = $request->company_name;
+            $company->name = $request->name;
             $company->cnpj = $request->cnpj;
             $company->phone = $request->phone;
-            $company->userId = $user->id;
-            $company->save();
+            $company->user_id = $user->id;
         
             if($company->save()){
                 return response()->json([
-                    'status' => 'Usuário criado com sucesso.',
+                    'status' => 'Criado com sucesso.',
                     'data' => $user,
-                ]);                
-            } else{
+                ]);
+            } else {
                 return response()->json([
-                    'error' => "Houve um erro inesperado"
+                    'error' => "Houve um erro inesperado."
                 ], 500);
-            }            
+            }
         });
     }
 }

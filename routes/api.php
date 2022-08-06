@@ -29,8 +29,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('point', [PointController::class, 'index']);
 
-Route::prefix('/company')->group(function(){
-    Route::post('/register', [CompanyController::class, 'registerCompany']);
+Route::prefix('/company')->group(function() {
+    Route::post('/', [CompanyController::class, 'store']);
+
     Route::prefix('/point')->group(function(){
         Route::get('/', [PointController::class, 'showUserPoints']);
         Route::post('/', [PointController::class, 'store']);
