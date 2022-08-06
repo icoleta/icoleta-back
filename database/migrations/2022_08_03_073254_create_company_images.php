@@ -15,7 +15,7 @@ class CreateCompanyImages extends Migration
     {
         Schema::create('company_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained('company');
+            $table->foreignId('company_id')->constrained('companies');
             $table->foreignId('file_id')->constrained('files');
             $table->timestamps();
         });

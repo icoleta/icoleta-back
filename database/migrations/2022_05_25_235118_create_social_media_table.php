@@ -16,7 +16,7 @@ class CreateSocialMediaTable extends Migration
         Schema::create('social_medias', function (Blueprint $table) {
             $table->id();
             $table->string('link');
-            $table->foreignId('company_id')->constrained('company');
+            $table->foreignId('company_id')->constrained('companies');
             $table->foreignId('social_media_types_id')->constrained('social_media_types');
             $table->timestamps();
         });
