@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\PointController;
 use App\Http\Controllers\API\CompanyController;
+use App\Http\Controllers\API\PersonController;
 use App\Http\Controllers\Auth\API\LoginController;
 
 /*
@@ -26,6 +27,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // Route::post('/login',[UserController::class, 'login']);
 // Route::post('/registerUser',[UserController::class, 'registerUser']);
 
+Route::prefix('/person')->group(function() {
+    Route::post('/', [PersonController::class, 'store']);
+});
 
 Route::get('point', [PointController::class, 'index']);
 

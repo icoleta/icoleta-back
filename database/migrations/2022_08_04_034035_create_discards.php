@@ -15,7 +15,7 @@ class CreateDiscards extends Migration
     {
         Schema::create('discards', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('person_id')->constrained('person');
+            $table->foreignId('person_id')->constrained('people');
             $table->foreignId('point_id')->constrained('points');
             $table->foreignId('residuum_id')->constrained('residuum');
             $table->decimal('weight', 6, 2, true);
