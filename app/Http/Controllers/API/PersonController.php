@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Person;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -61,5 +62,34 @@ class PersonController extends Controller
     public function index() {
         $people = Person::all();
         return response()->json($people);
+    }
+
+    public function makeVolunteer($personId) {
+        $person = Person::find($personId);
+        if(!$person) {
+            return response()->json([
+                'error' => 'Usuário não encontrado.'
+            ], 404);
+        }
+        
+        $user = User::find($person->user_id);
+
+        if(!$user) {
+            return response()->json([
+                'error' => 'Usuário não encontrado.'
+            ], 404);
+        }
+        if($user->isCompany) {
+            return response()->json([
+                'error' => 'Entidade não pode ter o papel de voluntário.'
+            ], 404);
+        }
+        
+        $volunteerRoleId = Role::where('name', 'volunteer')->first()->id;
+        
+        $user->role_id = $user->role_id == $volunteerRoleId ? null : $volunteerRoleId;
+        $user->save();
+        
+        return response(null, 204);
     }
 }

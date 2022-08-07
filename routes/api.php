@@ -54,6 +54,7 @@ Route::prefix('/company')->group(function() {
 Route::prefix('/admin')->group(function() {
     Route::prefix('/person')->group(function() {
         Route::get('/', [PersonController::class, 'index']);
+        Route::patch('/{id}', [PersonController::class, 'makeVolunteer']);
     });
     
     Route::prefix('/company')->group(function() {

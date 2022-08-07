@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('isCompany')->default(true);
-            // $table->foreignId('roles_id')->constrained('roles');
+            $table->foreignId('role_id')->nullable(true)->constrained('roles');
             $table->rememberToken();
             $table->timestamps();
         });
