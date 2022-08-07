@@ -15,9 +15,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             CitySeeder::class,
+            CourseSeeder::class,
             ResiduumSeeder::class,
-            SemesterSeeder::class,
-            CourseSeeder::class
+            RoleSeeder::class,
+            SemesterSeeder::class
         ]);
     }
 }
