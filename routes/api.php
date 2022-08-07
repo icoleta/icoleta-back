@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\PointController;
 use App\Http\Controllers\API\CompanyController;
+use App\Http\Controllers\API\RankingController;
 use App\Http\Controllers\Auth\API\LoginController;
 
 /*
@@ -39,6 +40,6 @@ Route::prefix('/company')->group(function(){
         Route::delete('/{id}', [PointController::class, 'destroy']);
     });
 });
-
+Route::get('ranking', [RankingController::class, 'ranking']);
 Route::post('login', [LoginController::class, 'login']);
 Route::post('logout', [LoginController::class, 'logout']);
