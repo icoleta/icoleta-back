@@ -47,11 +47,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     
     Route::middleware('ensureCompany')->prefix('/company')->group(function() {
         Route::prefix('/point')->group(function() {
-            Route::get('/', [PointController::class, 'showUserPoints']);
             Route::post('/', [PointController::class, 'store']);
             Route::get('/{id}', [PointController::class, 'show']);
             Route::put('/{id}', [PointController::class, 'update']);
             Route::delete('/{id}', [PointController::class, 'destroy']);
+            Route::get('/', [PointController::class, 'showCompanyPoints']);
         });
     });
     

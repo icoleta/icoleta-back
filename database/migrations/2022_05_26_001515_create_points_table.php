@@ -17,7 +17,7 @@ class CreatePointsTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('hours');
-            $table->string('phone');
+            $table->string('phone')->nullable();
             $table->double('longitude')->nullable();
             $table->double('latitude')->nullable();
             $table->boolean('active')->default(true);

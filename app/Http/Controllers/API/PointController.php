@@ -18,10 +18,7 @@ class PointController extends Controller
     public function index()
     {
         $points = Point::all();
-        
-        return response()->json([
-            'data' => $points,
-        ]);
+        return response($points, 200);
     }
 
     /**
@@ -36,11 +33,9 @@ class PointController extends Controller
             'name' => 'required',
             'hours' => 'required',
             'items' => 'required',
-            'companyEmail' => 'required',
-            // 'license' => 'required',
         ]);
 
-        if ($validator->fails())
+        if($validator->fails())
         {
             $messages = $validator->messages();
             return response()->json([
@@ -48,25 +43,16 @@ class PointController extends Controller
             ], 500);
         }
 
-        $user = User::where('email', $request->companyEmail)->first();
-        
-        if(!$user){
-            return response()->json([
-                'error' => 'Email não cadastrado!',
-            ], 400);
-        }
-
         $point = new Point();
         $point->name = $request->name;
         $point->hours = $request->hours;
-        $point->items = $request->items;
-        $point->company_id = $user->company->id;
+        $point->phone = $request->phone;
+        $point->longitude = $request->longitude;
+        $point->latitude = $request->latitude;        
+        $point->company_id = $request->user()->company->id;
 
         if($point->save()) {
-            return response()->json([
-                'status' => 'Ponto criado com sucesso.',
-                'data' => $point,
-            ]);
+            return response(null, 201);
         } else {
             return response()->json([
                 'error' => "Houve um erro inesperado"
@@ -88,9 +74,7 @@ class PointController extends Controller
             return response()->json(['error' => 'Ponto não encontrado'], 404);
         }
 
-        return response()->json([
-            'data' => $point,
-        ]);
+        return response($point, 200);
     }
 
     /**
@@ -99,32 +83,10 @@ class PointController extends Controller
      * @param Request $request
      * @return Json 
      */
-    public function showUserPoints(Request $request)
+    public function showCompanyPoints(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'CompanyEmail' => 'required',
-        ]);
-
-        if ($validator->fails())
-        {
-            $messages = $validator->messages();
-            return response()->json([
-                'error' => $messages,
-            ], 500);
-        }
-        
-        $user = User::where('email', $request->CompanyEmail)->first();
-        
-        if(!$user){
-            return response()->json([
-                'error' => 'Email não cadastrado!',
-            ], 400);
-        }
-        $points = Point::where('company_id', $user->company->id)->get();
-
-        return response()->json([
-            'data' => $points,
-        ]);
+        $points = Point::where('company_id', $request->user()->company->id)->get();
+        return response($points);
     }
 
     /**
@@ -149,21 +111,19 @@ class PointController extends Controller
             ], 500);
         }
 
-        $point = Point::where('id', $id)->first();
-        
+        $point = Point::find($id);
         if(!$point){
             return response()->json(['error' => 'Ponto não encontrado'], 404);
         }
         
         $point->name = $request->name;
         $point->hours = $request->hours;
-        $point->items = $request->items;
+        $point->phone = $request->phone;
+        $point->longitude = $request->longitude;
+        $point->latitude = $request->latitude;        
 
         if($point->save()) {
-            return response()->json([
-                'status' => 'Ponto editado com sucesso.',
-                'data' => $point,
-            ]);
+            return response(null, 204);
         } else {
             return response()->json([
                 'error' => "Houve um erro inesperado"
@@ -178,16 +138,13 @@ class PointController extends Controller
      */
     public function destroy($id)
     {
-        $point = Point::where('id', $id)->first();
-        
+        $point = Point::find($id);
         if(!$point){
             return response()->json(['error' => 'Ponto não encontrado'], 404);
         }
 
         if($point->delete()) {
-            return response()->json([
-                'status' => 'Ponto removido com sucesso.',
-            ]);
+            return response(null, 204);
         } else {
             return response()->json([
                 'error' => "Houve um erro inesperado"
