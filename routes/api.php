@@ -38,6 +38,7 @@ Route::post('/company', [CompanyController::class, 'store']);
 
 Route::get('semester', [SemesterController::class, 'index']);
 Route::get('course', [CourseController::class, 'index']);
+Route::get('/', [ResiduumController::class, 'index']);
 
 Route::post('login', [LoginController::class, 'login']);
 
@@ -68,7 +69,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         });
 
         Route::prefix('/residuum')->group(function() {
-            Route::get('/', [ResiduumController::class, 'index']);
             Route::post('/', [ResiduumController::class, 'store']);
             Route::put('/{id}', [ResiduumController::class, 'edit']);
             Route::delete('/{id}', [ResiduumController::class, 'delete']);
