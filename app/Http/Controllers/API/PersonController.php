@@ -16,10 +16,10 @@ class PersonController extends Controller
     public function store(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'cpf' => 'required',
+            'cpf' => 'required|unique:people,cpf',
             'course_id' => 'required',
             'semester_id' => 'required',
-            'email' => 'required',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required'
         ]);
 

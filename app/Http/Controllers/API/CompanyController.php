@@ -15,9 +15,9 @@ class CompanyController extends Controller
     public function store(Request $request) {    
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'cnpj' => 'required',
+            'cnpj' => 'required|unique:companies,cnpj',
             'phone' => 'required',
-            'email' => 'required',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required'
         ]);
 
