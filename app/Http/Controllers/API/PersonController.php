@@ -30,33 +30,31 @@ class PersonController extends Controller
             ], 500);
         }
 
-        DB::transaction(function() use (
-            $request
-        ) {
-            $user = new User();
-            $user->email = $request->email;
-            $user->isCompany = false;
-            $user->password = Hash::make($request->password);
-            $user->save();
+        try {
+            DB::transaction(function() use (
+                $request
+            ) {
+                $user = new User();
+                $user->email = $request->email;
+                $user->isCompany = false;
+                $user->password = Hash::make($request->password);
+                $user->save();
+    
+                $person = new Person();
+                $person->name = $request->name;
+                $person->cpf = $request->cpf;
+                $person->course_id = $request->course_id;
+                $person->semester_id = $request->semester_id;
+                $person->user_id = $user->id;
+                $person->save();
+            });
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Houve um erro inesperado.'
+            ], 500);
+        }
 
-            $person = new Person();
-            $person->name = $request->name;
-            $person->cpf = $request->cpf;
-            $person->course_id = $request->course_id;
-            $person->semester_id = $request->semester_id;
-            $person->user_id = $user->id;
-
-            if($person->save()) {
-                return response()->json([
-                    'status' => 'Criado com sucesso.',
-                    'data' => $user
-                ]);
-            } else {
-                return response()->json([
-                    'error' => 'Houve um erro inesperado.'
-                ], 500);
-            }
-        });
+        return response(null, 201);
     }
 
     public function index() {
