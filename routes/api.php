@@ -51,8 +51,8 @@ Route::prefix('/company')->group(function() {
     });
 });
 
-Route::group(['middleware' => ['auth:sanctum']], function() {
-    Route::middleware(['ensureAdmin'])->prefix('/admin')->group(function() {
+Route::group(['middleware' => ['auth:sanctum', 'ensureAdmin']], function() {
+    Route::prefix('/admin')->group(function() {
         Route::prefix('/person')->group(function() {
             Route::get('/', [PersonController::class, 'index']);
             Route::patch('/{id}', [PersonController::class, 'makeVolunteer']);
@@ -70,7 +70,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
             Route::put('/{id}', [ResiduumController::class, 'edit']);
             Route::delete('/{id}', [ResiduumController::class, 'delete']);
         });
-    });
+    });    
 });
 
 Route::post('login', [LoginController::class, 'login']);
