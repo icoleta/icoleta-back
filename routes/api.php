@@ -51,23 +51,25 @@ Route::prefix('/company')->group(function() {
     });
 });
 
-Route::prefix('/admin')->group(function() {
-    Route::prefix('/person')->group(function() {
-        Route::get('/', [PersonController::class, 'index']);
-        Route::patch('/{id}', [PersonController::class, 'makeVolunteer']);
-    });
+Route::group(['middleware' => ['auth:sanctum']], function() {
+    Route::middleware(['ensureAdmin'])->prefix('/admin')->group(function() {
+        Route::prefix('/person')->group(function() {
+            Route::get('/', [PersonController::class, 'index']);
+            Route::patch('/{id}', [PersonController::class, 'makeVolunteer']);
+        });
+        
+        Route::prefix('/company')->group(function() {
+            Route::get('/', [CompanyController::class, 'index']);
+            Route::get('/{id}', [CompanyController::class, 'show']);
+            Route::patch('/{id}', [CompanyController::class, 'verify']);
+        });
     
-    Route::prefix('/company')->group(function() {
-        Route::get('/', [CompanyController::class, 'index']);
-        Route::get('/{id}', [CompanyController::class, 'show']);
-        Route::patch('/{id}', [CompanyController::class, 'verify']);
-    });
-
-    Route::prefix('/residuum')->group(function() {
-        Route::get('/', [ResiduumController::class, 'index']);
-        Route::post('/', [ResiduumController::class, 'store']);
-        Route::put('/{id}', [ResiduumController::class, 'edit']);
-        Route::delete('/{id}', [ResiduumController::class, 'delete']);
+        Route::prefix('/residuum')->group(function() {
+            Route::get('/', [ResiduumController::class, 'index']);
+            Route::post('/', [ResiduumController::class, 'store']);
+            Route::put('/{id}', [ResiduumController::class, 'edit']);
+            Route::delete('/{id}', [ResiduumController::class, 'delete']);
+        });
     });
 });
 
