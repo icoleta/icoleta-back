@@ -70,8 +70,9 @@ Route::group(['middleware' => ['auth:sanctum', 'ensureAdmin']], function() {
             Route::put('/{id}', [ResiduumController::class, 'edit']);
             Route::delete('/{id}', [ResiduumController::class, 'delete']);
         });
-    });    
+    });
+
+    Route::post('logout', [LoginController::class, 'logout']);
 });
 
 Route::post('login', [LoginController::class, 'login']);
-Route::post('logout', [LoginController::class, 'logout']);

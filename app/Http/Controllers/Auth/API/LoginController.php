@@ -33,4 +33,11 @@ class LoginController extends Controller
         auth()->user()->token = $token->plainTextToken;
         return response()->json(['data' => auth()->user()]);
     }
+
+    public function logout() {
+        auth()->user()->tokens()->delete();
+        return [
+            'message' => 'Logged out'
+        ];
+    }
 }
