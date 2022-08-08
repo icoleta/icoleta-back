@@ -38,7 +38,7 @@ Route::post('/company', [CompanyController::class, 'store']);
 
 Route::get('semester', [SemesterController::class, 'index']);
 Route::get('course', [CourseController::class, 'index']);
-Route::get('/', [ResiduumController::class, 'index']);
+Route::get('/residuum', [ResiduumController::class, 'index']);
 
 Route::post('login', [LoginController::class, 'login']);
 
