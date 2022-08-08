@@ -29,32 +29,30 @@ class CompanyController extends Controller
             ], 500);
         }
 
-        DB::transaction(function () use (
-            $request,
-        ) {
-            $user = new User();
-            $user->email = $request->email;
-            $user->isCompany = true;
-            $user->password = Hash::make($request->password);
-            $user->save();
-
-            $company = new Company();
-            $company->name = $request->name;
-            $company->cnpj = $request->cnpj;
-            $company->phone = $request->phone;
-            $company->user_id = $user->id;
+        try {
+            DB::transaction(function() use(
+                $request
+            ) {
+                $user = new User();
+                $user->email = $request->email;
+                $user->isCompany = true;
+                $user->password = Hash::make($request->password);
+                $user->save();
         
-            if($company->save()){
-                return response()->json([
-                    'status' => 'Criado com sucesso.',
-                    'data' => $user,
-                ]);
-            } else {
-                return response()->json([
-                    'error' => "Houve um erro inesperado."
-                ], 500);
-            }
-        });
+                $company = new Company();
+                $company->name = $request->name;
+                $company->cnpj = $request->cnpj;
+                $company->phone = $request->phone;
+                $company->user_id = $user->id;
+                $company->save();
+            });
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => "Houve um erro inesperado."
+            ], 500);
+        }
+
+        return response(null, 201);
     }
 
     public function index() {
