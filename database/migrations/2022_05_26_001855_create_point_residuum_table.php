@@ -15,8 +15,8 @@ class CreatePointResiduumTable extends Migration
     {
         Schema::create('point_residuum', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('point_id')->constrained('points');
-            $table->foreignId('residuum_id')->constrained('residuum');
+            $table->foreignId('point_id')->constrained('points')->onDelete('cascade');
+            $table->foreignId('residuum_id')->constrained('residuum')->onDelete('cascade');
             $table->timestamps();
         });
     }
