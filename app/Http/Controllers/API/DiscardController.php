@@ -18,9 +18,8 @@ class DiscardController extends Controller
      */
     public function index()
     {
-        $discard = Discard::all();
-
-        return response()->json(['data' => $discard], 200);
+        $discards = Discard::with(['person', 'residuum', 'point'])->get();
+        return response($discards, 200);
     }
 
     /**
