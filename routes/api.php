@@ -38,14 +38,12 @@ Route::get('point', [PointController::class, 'index']);
 Route::post('/person', [PersonController::class, 'store']);
 Route::post('/company', [CompanyController::class, 'store']);
 
+Route::get('ranking', [RankingController::class, 'ranking']);
 Route::get('semester', [SemesterController::class, 'index']);
 Route::get('course', [CourseController::class, 'index']);
 Route::get('/residuum', [ResiduumController::class, 'index']);
 
 Route::post('login', [LoginController::class, 'login']);
-
-Route::get('ranking', [RankingController::class, 'ranking']);
-
 
 // Private Routes
 Route::group(['middleware' => ['auth:sanctum']], function() {
