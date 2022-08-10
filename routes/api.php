@@ -9,6 +9,7 @@ use App\Http\Controllers\API\DiscardController;
 use App\Http\Controllers\API\PersonController;
 use App\Http\Controllers\API\ResiduumController;
 use App\Http\Controllers\API\SemesterController;
+use App\Http\Controllers\API\RankingController;
 use App\Http\Controllers\Auth\API\LoginController;
 
 /*
@@ -42,6 +43,9 @@ Route::get('course', [CourseController::class, 'index']);
 Route::get('/residuum', [ResiduumController::class, 'index']);
 
 Route::post('login', [LoginController::class, 'login']);
+
+Route::get('ranking', [RankingController::class, 'ranking']);
+
 
 // Private Routes
 Route::group(['middleware' => ['auth:sanctum']], function() {
