@@ -5,9 +5,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\PointController;
 use App\Http\Controllers\API\CompanyController;
 use App\Http\Controllers\API\CourseController;
+use App\Http\Controllers\API\DiscardController;
 use App\Http\Controllers\API\PersonController;
 use App\Http\Controllers\API\ResiduumController;
 use App\Http\Controllers\API\SemesterController;
+use App\Http\Controllers\API\RankingController;
 use App\Http\Controllers\Auth\API\LoginController;
 
 /*
@@ -36,6 +38,7 @@ Route::get('point', [PointController::class, 'index']);
 Route::post('/person', [PersonController::class, 'store']);
 Route::post('/company', [CompanyController::class, 'store']);
 
+Route::get('ranking', [RankingController::class, 'ranking']);
 Route::get('semester', [SemesterController::class, 'index']);
 Route::get('course', [CourseController::class, 'index']);
 Route::get('/residuum', [ResiduumController::class, 'index']);
@@ -45,7 +48,6 @@ Route::post('login', [LoginController::class, 'login']);
 // Private Routes
 Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('logout', [LoginController::class, 'logout']);
-    
     Route::middleware('ensureCompany')->prefix('/company')->group(function() {
         Route::prefix('/point')->group(function() {
             Route::post('/', [PointController::class, 'store']);
@@ -60,6 +62,13 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::prefix('/person')->group(function() {
             Route::get('/', [PersonController::class, 'index']);
             Route::patch('/{id}', [PersonController::class, 'makeVolunteer']);
+        });
+
+        Route::prefix('discards')->group(function(){
+            Route::get('/', [DiscardController::class, 'index']);
+            Route::post('/', [DiscardController::class, 'store']);
+            Route::get('/{id}', [DiscardController::class, 'show']);
+            Route::delete('/{id}', [DiscardController::class, 'delete']);
         });
 
         Route::prefix('/company')->group(function() {
