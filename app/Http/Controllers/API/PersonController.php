@@ -17,8 +17,8 @@ class PersonController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'cpf' => 'required|unique:people,cpf',
-            'course_id' => 'required',
-            'semester_id' => 'required',
+            // 'course_id' => 'required',
+            // 'semester_id' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required'
         ]);
@@ -43,8 +43,8 @@ class PersonController extends Controller
                 $person = new Person();
                 $person->name = $request->name;
                 $person->cpf = $request->cpf;
-                $person->course_id = $request->course_id;
-                $person->semester_id = $request->semester_id;
+                $person->course_id = 1;
+                $person->semester_id = 1;
                 $person->user_id = $user->id;
                 $person->save();
             });
