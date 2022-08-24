@@ -16,7 +16,6 @@ class CreatePeople extends Migration
         Schema::create('people', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('cpf', 11);
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('course_id')->constrained('courses');
             $table->foreignId('semester_id')->constrained('semesters');

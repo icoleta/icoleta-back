@@ -16,7 +16,6 @@ class PersonController extends Controller
     public function store(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'cpf' => 'required|unique:people,cpf',
             // 'course_id' => 'required',
             // 'semester_id' => 'required',
             'email' => 'required|email|unique:users,email',
@@ -39,10 +38,9 @@ class PersonController extends Controller
                 $user->isCompany = false;
                 $user->password = Hash::make($request->password);
                 $user->save();
-    
+
                 $person = new Person();
                 $person->name = $request->name;
-                $person->cpf = $request->cpf;
                 $person->course_id = 1;
                 $person->semester_id = 1;
                 $person->user_id = $user->id;
@@ -69,7 +67,7 @@ class PersonController extends Controller
                 'error' => 'Usuário não encontrado.'
             ], 404);
         }
-        
+
         $user = User::find($person->user_id);
 
         if(!$user) {
@@ -82,12 +80,12 @@ class PersonController extends Controller
                 'error' => 'Entidade não pode ter o papel de voluntário.'
             ], 404);
         }
-        
+
         $volunteerRoleId = Role::where('name', 'volunteer')->first()->id;
-        
+
         $user->role_id = $user->role_id == $volunteerRoleId ? null : $volunteerRoleId;
         $user->save();
-        
+
         return response(null, 204);
     }
 }
