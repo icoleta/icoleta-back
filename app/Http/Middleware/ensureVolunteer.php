@@ -17,16 +17,14 @@ class ensureVolunteer
      */
     public function handle(Request $request, Closure $next)
     {
-        $volunteerRole = Role::where('name', 'volunteer')->first();
+        $volunteerRoleId = Role::where('name', 'volunteer')->first()->id;
 
-        // Entidades nao podem ser voluntarios
-        if($request->user()->role_id == $volunteerRole->id && !$request->user()->isCompany) {
+        if($request->user()->role_id == $volunteerRoleId) {
             return $next($request);
         }
 
         return response([
             'error' => 'Unauthorized'
         ], 401);
-
     }
 }

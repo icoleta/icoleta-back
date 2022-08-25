@@ -17,10 +17,9 @@ class ensureAdmin
      */
     public function handle(Request $request, Closure $next)
     {   
-        $adminRole = Role::where('name', 'admin')->first();
+        $adminRoleId = Role::where('name', 'admin')->first()->id;
 
-        // Entidades nao podem ser admins
-        if($request->user()->role_id == $adminRole->id && !$request->user()->isCompany) {
+        if($request->user()->role_id == $adminRoleId) {
             return $next($request);
         }
 

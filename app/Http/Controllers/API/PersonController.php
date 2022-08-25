@@ -16,9 +16,8 @@ class PersonController extends Controller
     public function store(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'cpf' => 'required|unique:people,cpf',
-            'course_id' => 'required',
-            'semester_id' => 'required',
+            // 'course_id' => 'required',
+            // 'semester_id' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required'
         ]);
@@ -36,15 +35,13 @@ class PersonController extends Controller
             ) {
                 $user = new User();
                 $user->email = $request->email;
-                $user->isCompany = false;
                 $user->password = Hash::make($request->password);
                 $user->save();
-    
+
                 $person = new Person();
                 $person->name = $request->name;
-                $person->cpf = $request->cpf;
-                $person->course_id = $request->course_id;
-                $person->semester_id = $request->semester_id;
+                $person->course_id = 1;
+                $person->semester_id = 1;
                 $person->user_id = $user->id;
                 $person->save();
             });
@@ -69,7 +66,7 @@ class PersonController extends Controller
                 'error' => 'Usuário não encontrado.'
             ], 404);
         }
-        
+
         $user = User::find($person->user_id);
 
         if(!$user) {
@@ -77,17 +74,19 @@ class PersonController extends Controller
                 'error' => 'Usuário não encontrado.'
             ], 404);
         }
-        if($user->isCompany) {
+
+        $companyRoleId = Role::where('name', 'company')->first()->id;
+        if($user->role_id == $companyRoleId) {
             return response()->json([
                 'error' => 'Entidade não pode ter o papel de voluntário.'
             ], 404);
         }
-        
+
         $volunteerRoleId = Role::where('name', 'volunteer')->first()->id;
-        
+
         $user->role_id = $user->role_id == $volunteerRoleId ? null : $volunteerRoleId;
         $user->save();
-        
+
         return response(null, 204);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,7 +32,13 @@ class LoginController extends Controller
         
         $token = auth()->user()->createToken($request->email);
         auth()->user()->token = $token->plainTextToken;
-        return response()->json(['data' => auth()->user()]);
+        
+        $userRole = Role::find(auth()->user()->role_id);
+        
+        return response()->json([
+            'user' => auth()->user(),
+            'role' => $userRole ? $userRole->name : null
+        ]);
     }
 
     public function logout() {

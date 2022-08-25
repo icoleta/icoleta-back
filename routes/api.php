@@ -48,6 +48,9 @@ Route::post('login', [LoginController::class, 'login']);
 // Private Routes
 Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('logout', [LoginController::class, 'logout']);
+
+    Route::get('/person/discards', [DiscardController::class, 'listUserDiscards']);
+    
     Route::middleware('ensureCompany')->prefix('/company')->group(function() {
         Route::prefix('/point')->group(function() {
             Route::post('/', [PointController::class, 'store']);

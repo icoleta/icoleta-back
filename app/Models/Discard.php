@@ -9,8 +9,7 @@ class Discard extends Model
 {
     use HasFactory;
 
-    public function person()
-    {
+    public function person() {
         return $this->belongsTo(Person::class, 'person_id', 'id');
     }
 
