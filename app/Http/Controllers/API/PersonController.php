@@ -35,7 +35,6 @@ class PersonController extends Controller
             ) {
                 $user = new User();
                 $user->email = $request->email;
-                $user->isCompany = false;
                 $user->password = Hash::make($request->password);
                 $user->save();
 
@@ -75,7 +74,9 @@ class PersonController extends Controller
                 'error' => 'Usuário não encontrado.'
             ], 404);
         }
-        if($user->isCompany) {
+
+        $companyRoleId = Role::where('name', 'company')->first()->id;
+        if($user->role_id == $companyRoleId) {
             return response()->json([
                 'error' => 'Entidade não pode ter o papel de voluntário.'
             ], 404);

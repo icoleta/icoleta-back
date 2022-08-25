@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Role;
 use App\Models\User;
 use App\Models\Company;
 use Illuminate\Http\Request;
@@ -15,8 +16,7 @@ class CompanyController extends Controller
     public function store(Request $request) {    
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'cnpj' => 'required|unique:companies,cnpj',
-            'phone' => 'required',
+            'phone' => 'required|unique:companies,phone',
             'email' => 'required|email|unique:users,email',
             'password' => 'required'
         ]);
@@ -33,15 +33,16 @@ class CompanyController extends Controller
             DB::transaction(function() use(
                 $request
             ) {
+                $companyRoleId = Role::where('name', 'company')->first()->id;
+                
                 $user = new User();
                 $user->email = $request->email;
-                $user->isCompany = true;
+                $user->role_id = $companyRoleId;
                 $user->password = Hash::make($request->password);
                 $user->save();
-        
+
                 $company = new Company();
                 $company->name = $request->name;
-                $company->cnpj = $request->cnpj;
                 $company->phone = $request->phone;
                 $company->user_id = $user->id;
                 $company->save();

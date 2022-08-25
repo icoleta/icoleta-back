@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\Role;
 use Illuminate\Http\Request;
 
 class ensureCompany
@@ -16,7 +17,9 @@ class ensureCompany
      */
     public function handle(Request $request, Closure $next)
     {
-        if($request->user()->isCompany) {
+        $companyRoleId = Role::where('name', 'company')->first()->id;
+
+        if($request->user()->role_id == $companyRoleId) {
             return $next($request);
         }
 

@@ -20,6 +20,9 @@ class RoleSeeder extends Seeder
             ],
             [
                 'name' => 'volunteer'
+            ],
+            [
+                'name' => 'company'
             ]
         ]);
     }
