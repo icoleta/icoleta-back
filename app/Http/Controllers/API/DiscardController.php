@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Discard;
+use App\Models\Person;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -123,5 +124,41 @@ class DiscardController extends Controller
                 'error' => "Houve um erro inesperado!"
             ], 500);
         }
+    }
+
+    public function listUserDiscards($userId) {
+        $personId = Person::where('user_id', $userId)->first()->id;
+        
+        $userDiscards = Discard::with('residuum')->where('person_id', $personId)->get();
+        $totalWeightDiscarded = 0;
+
+        $discardsPerResiduum = [];
+        $weightPerResiduum = [];
+
+        foreach($userDiscards as $discard) {
+            $totalWeightDiscarded += $discard->weight;
+
+            // Initialize or sum residuum count
+            if(!array_key_exists($discard->residuum->name, $discardsPerResiduum)) {
+                $discardsPerResiduum[$discard->residuum->name] = 1;
+            } else {
+                $discardsPerResiduum[$discard->residuum->name] += 1;
+            }
+
+            // Initialize or sum residuum weight
+            if(!array_key_exists($discard->residuum->name, $weightPerResiduum)) {
+                $weightPerResiduum[$discard->residuum->name] = $discard->weight;
+            } else {
+                $weightPerResiduum[$discard->residuum->name] += $discard->weight;
+            }
+        }
+
+        return response()->json([
+            'discardsCount' => $userDiscards->count(),
+            'totalWeightDiscarded' => $totalWeightDiscarded,
+            'discardsPerResiduum' => $discardsPerResiduum,
+            'weightPerResiduum' => $weightPerResiduum,
+            'discards' => $userDiscards,
+        ]);
     }
 }
