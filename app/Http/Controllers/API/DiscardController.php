@@ -126,8 +126,8 @@ class DiscardController extends Controller
         }
     }
 
-    public function listUserDiscards($userId) {
-        $personId = Person::where('user_id', $userId)->first()->id;
+    public function listUserDiscards(Request $request) {
+        $personId = Person::where('user_id', $request->user()->id)->first()->id;
         
         $userDiscards = Discard::with('residuum')->where('person_id', $personId)->get();
         $totalWeightDiscarded = 0;

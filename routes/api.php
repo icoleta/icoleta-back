@@ -49,8 +49,7 @@ Route::post('login', [LoginController::class, 'login']);
 Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('logout', [LoginController::class, 'logout']);
 
-    Route::get('/person/{id}/discards', [DiscardController::class, 'listUserDiscards'])
-        ->middleware('ensureOwner');
+    Route::get('/person/discards', [DiscardController::class, 'listUserDiscards']);
     
     Route::middleware('ensureCompany')->prefix('/company')->group(function() {
         Route::prefix('/point')->group(function() {
