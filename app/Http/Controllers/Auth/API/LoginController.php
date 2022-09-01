@@ -32,11 +32,15 @@ class LoginController extends Controller
         
         $token = auth()->user()->createToken($request->email);
         auth()->user()->token = $token->plainTextToken;
+
+        $user = auth()->user();
         
-        $userRole = Role::find(auth()->user()->role_id);
+        $userRole = Role::find($user->role_id);
+        $userName = $user->person->name ?? $user->company->name;
         
         return response()->json([
-            'user' => auth()->user(),
+            'name' => $userName,
+            'user' => $user,
             'role' => $userRole ? $userRole->name : null
         ]);
     }

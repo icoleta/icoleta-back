@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Discard;
 use App\Models\Person;
+use App\Models\Residuum;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -131,33 +132,26 @@ class DiscardController extends Controller
         
         $userDiscards = Discard::with(['residuum', 'point'])->where('person_id', $personId)->get();
         $totalWeightDiscarded = 0;
+        $summaryByResiduum = [];
+        
+        // Initializes count and weight by residuum
+        $residuumTypes = Residuum::orderBy('name')->get();
+        foreach($residuumTypes as $residuum) {
+            $summaryByResiduum[$residuum->name]['count'] = 0;
+            $summaryByResiduum[$residuum->name]['weight'] = 0;
+        }
 
-        $discardsPerResiduum = [];
-        $weightPerResiduum = [];
-
+        // Sums the total discarded weight and the count and weight per residuum discarded
         foreach($userDiscards as $discard) {
             $totalWeightDiscarded += $discard->weight;
-
-            // Initialize or sum residuum count
-            if(!array_key_exists($discard->residuum->name, $discardsPerResiduum)) {
-                $discardsPerResiduum[$discard->residuum->name] = 1;
-            } else {
-                $discardsPerResiduum[$discard->residuum->name] += 1;
-            }
-
-            // Initialize or sum residuum weight
-            if(!array_key_exists($discard->residuum->name, $weightPerResiduum)) {
-                $weightPerResiduum[$discard->residuum->name] = $discard->weight;
-            } else {
-                $weightPerResiduum[$discard->residuum->name] += $discard->weight;
-            }
+            $summaryByResiduum[$discard->residuum->name]['count'] += 1;
+            $summaryByResiduum[$discard->residuum->name]['weight'] += $discard->weight;
         }
 
         return response()->json([
             'discardsCount' => $userDiscards->count(),
             'totalWeightDiscarded' => $totalWeightDiscarded,
-            'discardsPerResiduum' => $discardsPerResiduum,
-            'weightPerResiduum' => $weightPerResiduum,
+            'summaryByResiduum' => $summaryByResiduum,
             'discards' => $userDiscards,
         ]);
     }
