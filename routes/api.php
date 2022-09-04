@@ -33,7 +33,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // Route::post('/registerUser',[UserController::class, 'registerUser']);
 
 // Public Routes
-Route::get('point', [PointController::class, 'index']);
+Route::get('points', [PointController::class, 'index']);
+Route::get('point', [PointController::class, 'show']);
 
 Route::post('/person', [PersonController::class, 'store']);
 Route::post('/company', [CompanyController::class, 'store']);
