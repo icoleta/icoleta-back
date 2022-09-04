@@ -34,7 +34,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 // Public Routes
 Route::get('points', [PointController::class, 'index']);
-Route::get('point', [PointController::class, 'show']);
+Route::get('point/{id}', [PointController::class, 'show']);
 
 Route::post('/person', [PersonController::class, 'store']);
 Route::post('/company', [CompanyController::class, 'store']);
