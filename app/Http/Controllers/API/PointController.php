@@ -6,6 +6,7 @@ use App\Models\Point;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class PointController extends Controller
@@ -57,6 +58,22 @@ class PointController extends Controller
                 $point->save();
 
                 $point->collectableItems()->attach($request->items);
+
+                if($request->image) {
+                    $newImagePath = $request->image->store('images_points', 'public');
+                    $oldImagePath = $point->path;
+                    
+                    try {
+                        $point->path = $newImagePath;
+                        $point->save();
+                    } catch (\Throwable $th) {
+                        dd($th);
+                        if ($newImagePath) {
+                            Storage::delete($newImagePath);
+                        }
+                    }
+                    Storage::delete($oldImagePath);
+                }
             });
         } catch (\Throwable $th) {
             return response()->json([
