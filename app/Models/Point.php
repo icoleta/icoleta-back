@@ -16,7 +16,11 @@ class Point extends Model
 
     public function getPathAttribute($path)
     {
+        $protocol = (!empty($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) == 'on' || $_SERVER['HTTPS'] == '1')) ? 'https://' : 'http://';
+        $server = $_SERVER['SERVER_NAME'];
+        $port = $_SERVER['SERVER_PORT'] ? ':'.$_SERVER['SERVER_PORT'] : '';
+        
         $url = Storage::url('public/'.$path);
-        return $url;
+        return $protocol.$server.$port.$url;
     }
 }
