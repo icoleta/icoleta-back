@@ -30,51 +30,6 @@ class DiscardController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required',
-            'weight' => 'required',
-            'point_id' => 'required',
-            'residuum_id' => 'required',
-        ]);
-
-        if($validator->fails()) {
-            $messages = $validator->messages();
-            return response()->json([
-                'error' => $messages,
-            ], 500);
-        }
-
-        try {
-            DB::transaction(function() use (
-                $request
-            ) {
-                $person = User::where('email', $request->email)->first()->person;
-
-                if(!$person)
-                    return response()->json([
-                        'error' => 'Usuário não encontrado!'
-                    ], 404);
-
-                $discard = new Discard();
-                $discard->person_id = $person->id;
-                $discard->point_id = $request->point_id;
-                $discard->residuum_id = $request->residuum_id;
-                $discard->weight = $request->weight;
-                $discard->save();
-    
-                return response()->json([
-                    'data' => $discard,
-                    'status' => 'Descarte cadastrado!'
-                ], 201);
-            });
-        } catch (\Throwable $th) {
-            return response()->json([
-                'error' => 'Houve um erro inesperado!'
-            ], 500);
-        }
-    }
 
     /**
      * Display the specified resource.

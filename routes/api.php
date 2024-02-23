@@ -65,12 +65,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::middleware('ensureAdmin')->prefix('/admin')->group(function() {
         Route::prefix('/person')->group(function() {
             Route::get('/', [PersonController::class, 'index']);
-            Route::patch('/{id}', [PersonController::class, 'makeVolunteer']);
         });
 
         Route::prefix('discards')->group(function(){
             Route::get('/', [DiscardController::class, 'index']);
-            Route::post('/', [DiscardController::class, 'store']);
             Route::get('/{id}', [DiscardController::class, 'show']);
             Route::delete('/{id}', [DiscardController::class, 'delete']);
         });
