@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Discard;
 use App\Models\Person;
 use App\Models\Residuum;
+use App\Models\Token;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -78,69 +79,50 @@ class DiscardController extends Controller
 
     public function createDiscardAsUser(Request $request)
     {
-        $data = $this->getTokenData(request('token'));
-
-        return response()->json([
-            'error' => $data
-        ], 500);
-    
-        $validator = Validator::make($request->all(), [
-            'email' => 'required',
-            'weight' => 'required',
-            'point_id' => 'required|exist:points,id',
-            'residuum_id' => [
-                'required',
-                function ($attribute, $value, $fail) use ($request) {
-                    $pointId = $request->input('point_id');
-                    $exists = DB::table('point_residuum')
-                        ->where('residuum_id', $value)
-                        ->where('point_id', $pointId)
-                        ->exists();
-                    if (!$exists) {
-                        $fail('Invalid point_id or residuum_id.');
-                    }
-                },
-            ],
-        ]);
-
-        return response()->json([
-            'error' => 42
-        ], 500);
-
-
-        if ($validator->fails()) {
-            $messages = $validator->messages();
-            return response()->json([
-                'error' => $messages,
-            ], 500);
-        }
-
         try {
             DB::transaction(function () use (
                 $request
             ) {
-                $person = User::where('email', $request->email)->first()->person;
+                $data = $this->getTokenData(request('token'));
+                list($weight, $pointId, $iat) = $data;
+                if (!$data) {
+                    return response()->json([
+                        'error' => 'Token Inválido!'
+                    ], 500);
+                }
 
-                if (!$person)
+                if ($this->isIatOlderThanFiveMinutes($iat)) {
+                    return response()->json([
+                        'error' => 'Token Expirado!'
+                    ], 500);
+                }
+        
+                $person = User::where('email', $request->email)->first()->person;
+                if (!$person) {
                     return response()->json([
                         'error' => 'Usuário não encontrado!'
                     ], 404);
+                }
+
+                // tokens are unique, trying to use the same will result in error
+                $token = new Token();
+                $token->token = request('token');
+                $token->save();
 
                 $discard = new Discard();
                 $discard->person_id = $person->id;
-                $discard->point_id = $request->point_id;
-                $discard->residuum_id = $request->residuum_id;
-                $discard->weight = $request->weight;
+                $discard->point_id = $pointId;
+                $discard->weight = $weight;
+                $discard->residuum_id = 4; // TODO: hardcoded, mudar isso
                 $discard->save();
-
-                return response()->json([
-                    'data' => $discard,
-                    'status' => 'Descarte cadastrado!'
-                ], 201);
             });
+            return response()->json([
+                'status' => 'Descarte cadastrado!'
+            ], 201);
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Houve um erro inesperado!'
+                // 'error' => $th,
+                'error' => 'Erro desconhecido'
             ], 500);
         }
     }
@@ -228,25 +210,32 @@ class DiscardController extends Controller
 
     private function getTokenData($token)
     {
-        $secretKey = 'umasenha';
-        
+        $secretKey = env('DISCARD_SECRET');
+
         list($headerEncoded, $payloadEncoded, $signature) = explode('.', $token);
-        
         $payload = json_decode(base64_decode($payloadEncoded));
-        
+
         $computedSignature = hash_hmac('sha256', "$headerEncoded.$payloadEncoded", $secretKey, true);
         $computedSignatureBase64 = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($computedSignature));
 
         if ($computedSignatureBase64 !== $signature) {
             return null;
         }
-
+    
         $weight = $payload->weight;
-        $residuum_id = $payload->residuum_id;
+        $pointId = $payload->point_id;
+        $iat = $payload->iat;
 
         return [
             $weight,
-            $residuum_id,
+            $pointId,
+            $iat
         ];
+    }
+
+    private function isIatOlderThanFiveMinutes($iat)
+    {
+        $currentTimestamp = time();
+        return ($currentTimestamp - $iat) > (60 * 5);
     }
 }
