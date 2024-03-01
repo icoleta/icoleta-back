@@ -42,7 +42,7 @@ class PointController extends Controller
             return response()->json([
                 'error' => $messages,
             ], 500);
-        }        
+        }
 
         try {
             DB::transaction(function() use(
@@ -64,7 +64,7 @@ class PointController extends Controller
                     $oldImagePath = $point->path;
                     
                     try {
-                        $point->path = $newImagePath;
+                        $point->image = $newImagePath;
                         $point->save();
                     } catch (\Throwable $th) {
                         dd($th);

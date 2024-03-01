@@ -14,13 +14,13 @@ class Point extends Model
         return $this->belongsToMany(Residuum::class, 'point_residuum');
     }
 
-    public function getPathAttribute($path)
+    public function getImageAttribute($image)
     {
         $protocol = (!empty($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) == 'on' || $_SERVER['HTTPS'] == '1')) ? 'https://' : 'http://';
         $server = $_SERVER['SERVER_NAME'];
         $port = $_SERVER['SERVER_PORT'] ? ':'.$_SERVER['SERVER_PORT'] : '';
         
-        $url = Storage::url('public/'.$path);
+        $url = Storage::url('public/'.$image);
         return $protocol.$server.$port.$url;
     }
 }
