@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Discard;
 use App\Models\Person;
 use App\Models\Residuum;
+use App\Models\Token;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class DiscardController extends Controller
 {
@@ -31,6 +32,56 @@ class DiscardController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public function createDiscardAsUser(Request $request)
+    {
+        try {
+            DB::transaction(function () use (
+                $request
+            ) {
+                $data = $this->getTokenData(request('token'));
+                list($weight, $pointId, $iat) = $data;
+                if (!$data) {
+                    return response()->json([
+                        'error' => 'Token Inválido!'
+                    ], 500);
+                }
+
+                if ($this->isIatOlderThanFiveMinutes($iat)) {
+                    return response()->json([
+                        'error' => 'Token Expirado!'
+                    ], 500);
+                }
+        
+                $person = User::where('email', $request->email)->first()->person;
+                if (!$person) {
+                    return response()->json([
+                        'error' => 'Usuário não encontrado!'
+                    ], 404);
+                }
+
+                // tokens are unique, trying to use the same will result in error
+                $token = new Token();
+                $token->token = request('token');
+                $token->save();
+
+                $discard = new Discard();
+                $discard->person_id = $person->id;
+                $discard->point_id = $pointId;
+                $discard->weight = $weight;
+                $discard->residuum_id = 4; // TODO: hardcoded, mudar isso
+                $discard->save();
+            });
+            return response()->json([
+                'status' => 'Descarte cadastrado!'
+            ], 201);
+        } catch (\Throwable $th) {
+            return response()->json([
+                // 'error' => $th,
+                'error' => 'Erro desconhecido'
+            ], 500);
+        }
+    }
+
     /**
      * Display the specified resource.
      *
@@ -40,8 +91,8 @@ class DiscardController extends Controller
     public function show($id)
     {
         $discard = Discard::where('id', $id)->first();
-        
-        if(!$discard){
+
+        if (!$discard) {
             return response()->json(['error' => 'Descarte não encontrado!'], 404);
         }
 
@@ -69,11 +120,11 @@ class DiscardController extends Controller
     public function destroy($id)
     {
         $discard = Discard::find($id);
-        if(!$discard){
+        if (!$discard) {
             return response()->json(['error' => 'Descarte não encontrado!'], 404);
         }
 
-        if($discard->delete()) {
+        if ($discard->delete()) {
             return response()->json(['status' => 'Descarte removido!'], 200);
         } else {
             return response()->json([
@@ -82,22 +133,23 @@ class DiscardController extends Controller
         }
     }
 
-    public function listUserDiscards(Request $request) {
+    public function listUserDiscards(Request $request)
+    {
         $personId = Person::where('user_id', $request->user()->id)->first()->id;
-        
+
         $userDiscards = Discard::with(['residuum', 'point'])->where('person_id', $personId)->get();
         $totalWeightDiscarded = 0;
         $summaryByResiduum = [];
-        
+
         // Initializes count and weight by residuum
         $residuumTypes = Residuum::orderBy('name')->get();
-        foreach($residuumTypes as $residuum) {
+        foreach ($residuumTypes as $residuum) {
             $summaryByResiduum[$residuum->name]['count'] = 0;
             $summaryByResiduum[$residuum->name]['weight'] = 0;
         }
 
         // Sums the total discarded weight and the count and weight per residuum discarded
-        foreach($userDiscards as $discard) {
+        foreach ($userDiscards as $discard) {
             $totalWeightDiscarded += $discard->weight;
             $summaryByResiduum[$discard->residuum->name]['count'] += 1;
             $summaryByResiduum[$discard->residuum->name]['weight'] += $discard->weight;
@@ -109,5 +161,36 @@ class DiscardController extends Controller
             'summaryByResiduum' => $summaryByResiduum,
             'discards' => $userDiscards,
         ]);
+    }
+
+    private function getTokenData($token)
+    {
+        $secretKey = env('DISCARD_SECRET');
+
+        list($headerEncoded, $payloadEncoded, $signature) = explode('.', $token);
+        $payload = json_decode(base64_decode($payloadEncoded));
+
+        $computedSignature = hash_hmac('sha256', "$headerEncoded.$payloadEncoded", $secretKey, true);
+        $computedSignatureBase64 = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($computedSignature));
+
+        if ($computedSignatureBase64 !== $signature) {
+            return null;
+        }
+    
+        $weight = $payload->weight;
+        $pointId = $payload->point_id;
+        $iat = $payload->iat;
+
+        return [
+            $weight,
+            $pointId,
+            $iat
+        ];
+    }
+
+    private function isIatOlderThanFiveMinutes($iat)
+    {
+        $currentTimestamp = time();
+        return ($currentTimestamp - $iat) > (60 * 5);
     }
 }
