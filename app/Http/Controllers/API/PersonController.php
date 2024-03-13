@@ -59,34 +59,4 @@ class PersonController extends Controller
         return response()->json($people);
     }
 
-    public function makeVolunteer($personId) {
-        $person = Person::find($personId);
-        if(!$person) {
-            return response()->json([
-                'error' => 'Usuário não encontrado.'
-            ], 404);
-        }
-
-        $user = User::find($person->user_id);
-
-        if(!$user) {
-            return response()->json([
-                'error' => 'Usuário não encontrado.'
-            ], 404);
-        }
-
-        $companyRoleId = Role::where('name', 'company')->first()->id;
-        if($user->role_id == $companyRoleId) {
-            return response()->json([
-                'error' => 'Entidade não pode ter o papel de voluntário.'
-            ], 404);
-        }
-
-        $volunteerRoleId = Role::where('name', 'volunteer')->first()->id;
-
-        $user->role_id = $user->role_id == $volunteerRoleId ? null : $volunteerRoleId;
-        $user->save();
-
-        return response(null, 204);
-    }
 }
