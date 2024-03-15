@@ -78,44 +78,41 @@ class DiscardController extends Controller
     }
 
     public function createDiscardAsUser(Request $request)
-    {
+    {        
         try {
-            DB::transaction(function () use (
-                $request
-            ) {
-                $data = $this->getTokenData(request('token'));
-                list($weight, $pointId, $iat) = $data;
-                if (!$data) {
-                    return response()->json([
-                        'error' => 'Token Inválido!'
-                    ], 500);
-                }
+            $data = $this->getTokenData(request('token'));
+            list($weight, $pointId, $iat) = $data;
+            if (!$data) {
+                return response()->json([
+                    'error' => 'Token Inválido!'
+                ], 500);
+            }
 
-                if ($this->isIatOlderThanFiveMinutes($iat)) {
-                    return response()->json([
-                        'error' => 'Token Expirado!'
-                    ], 500);
-                }
-        
-                $person = User::where('email', $request->email)->first()->person;
-                if (!$person) {
-                    return response()->json([
-                        'error' => 'Usuário não encontrado!'
-                    ], 404);
-                }
+            if ($this->isIatOlderThanFiveMinutes($iat)) {
+                return response()->json([
+                    'error' => 'Token Expirado!'
+                ], 500);
+            }
+    
+            $person = User::where('email', $request->email)->first()->person;
+            if (!$person) {
+                return response()->json([
+                    'error' => 'Usuário não encontrado!'
+                ], 404);
+            }
 
-                // tokens are unique, trying to use the same will result in error
-                $token = new Token();
-                $token->token = request('token');
-                $token->save();
+            // tokens are unique, trying to use the same will result in error
+            $token = new Token();
+            $token->token = request('token');
+            $token->save();
 
-                $discard = new Discard();
-                $discard->person_id = $person->id;
-                $discard->point_id = $pointId;
-                $discard->weight = $weight;
-                $discard->residuum_id = 4; // TODO: hardcoded, mudar isso
-                $discard->save();
-            });
+            $discard = new Discard();
+            $discard->person_id = $person->id;
+            $discard->point_id = $pointId;
+            $discard->weight = $weight;
+            $discard->residuum_id = 4; // TODO: hardcoded, mudar isso
+            $discard->save();
+
             return response()->json([
                 'status' => 'Descarte cadastrado!'
             ], 201);
