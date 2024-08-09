@@ -20,7 +20,19 @@ class SemesterSeeder extends Seeder
             ],
             [
                 'name' => '2022.1',
-            ]
+            ],
+            [
+                'name' => '2022.2',
+            ],
+            [
+                'name' => '2023.1',
+            ],
+            [
+                'name' => '2023.2',
+            ],
+            [
+                'name' => '2024.1',
+            ]          
         ]);
     }
 }
