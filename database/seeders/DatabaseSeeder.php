@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
             CourseSeeder::class,
             ResiduumSeeder::class,
             RoleSeeder::class,
-            SemesterSeeder::class
+            SemesterSeeder::class,
+            UserSeeder::class
         ]);
     }
 }
