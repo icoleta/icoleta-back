@@ -31,6 +31,7 @@ class FeedbackController extends Controller
                 $feedback = new Feedback();
                 $feedback->name = request('name');
                 $feedback->email = request('email');
+                $feedback->reason = request('reason');
                 $feedback->message = request('message');
                 $feedback->save();
             });
@@ -41,5 +42,30 @@ class FeedbackController extends Controller
         }
 
         return response(null, 201);
+    }
+
+    public function destroy($id)
+    {
+        $feedback = Feedback::find($id);
+
+        if (!$feedback) {
+            return response()->json([
+                'error' => 'Feedback não encontrado.'
+            ], 404);
+        }
+
+        if ($feedback->delete()) {
+            return response(null, 204);
+        }
+
+        return response()->json([
+            'error' => 'Houve um erro inesperado.'
+        ], 500);
+    }
+
+    public function index()
+    {
+        $feedback = Feedback::all();
+        return response()->json($feedback);
     }
 }

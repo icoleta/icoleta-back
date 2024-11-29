@@ -87,5 +87,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
             Route::put('/{id}', [ResiduumController::class, 'edit']);
             Route::delete('/{id}', [ResiduumController::class, 'delete']);
         });
+
+        Route::prefix('/feedback')->group(function () {
+            Route::get('/', [FeedbackController::class, 'index']);
+            Route::delete('/{id}', [FeedbackController::class, 'delete']);
+        });
     });
 });
